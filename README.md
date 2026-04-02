@@ -95,7 +95,7 @@ When you hit Y to commit, it stays on your machine. When you hit Y to push, it g
 ## Install
 
 ```bash
-npx skills add soobinhwang/vibe-commit
+npx skills add toolbysue/vibe-commit
 ```
 
 Works with: Claude Code CLI and Claude Code IDE integration (VS Code, Cursor, etc.)
