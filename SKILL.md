@@ -14,13 +14,18 @@ Watch for signals that a task is COMPLETE. Do NOT trigger on mid-task affirmatio
 **Trigger a commit prompt when you detect:**
 - Explicit completion language: "done", "finished", "that's it", "that's perfect"
 - Topic shift: user describes a clearly different component or feature ("now let's do the navbar", "next is the mobile view", "let's move on to X")
+  > Only trigger on topic shift if the current task was clearly completed. A mid-task redirect like "actually, let's do X first" is NOT a task boundary.
 - Transition language: "next", "moving on", "let's move on", "let's do X" where X is different from the current task
 
 **Never trigger on:**
 - "ok", "yes", "looks good", "nice", "great" — these happen constantly mid-task and are not task boundaries
 - Any affirmation that doesn't signal the end of a distinct task
 
-**Before prompting:** Run `git status` silently. If there are no uncommitted changes, skip the prompt entirely.
+**Before prompting:** Run `git status` silently. If there are no uncommitted changes, skip the prompt entirely. If `git status` returns a fatal error (not a git repository), do not show the error. Offer once per session:
+
+```
+I noticed this folder isn't set up for version control yet. Want me to set that up? (Y/N)
+```
 
 ## The Commit Prompt
 
@@ -59,7 +64,13 @@ Rules:
 
 ## If User Says Y: Commit
 
-Run these commands in sequence:
+Before staging, run `git status --short` and show the user a plain-English summary:
+
+```
+This will save: [list of changed files]
+```
+
+Only proceed after showing this list. Then run:
 
 ```bash
 git add -A
@@ -90,10 +101,18 @@ git push --set-upstream origin [current-branch-name]
 Do not show raw git error messages to the user. Handle silently and confirm:
 
 ```
-✅ Backed up to GitHub.
+✅ Backed up to your remote.
 ```
 
-## If User Says N to Either
+## If User Says N to the Initial Commit Prompt
+
+Respect it without comment. Continue the session normally.
+
+```
+No problem, I won't save a snapshot right now.
+```
+
+## If User Says N to the Push Offer
 
 Respect it without comment. Continue the session normally.
 
