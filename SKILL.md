@@ -1,6 +1,7 @@
 ---
 name: vibe-commit
 description: Builds good Git commit habits by detecting when you're done with a task and prompting a well-crafted commit — without you having to ask.
+agents: [claude-code]
 ---
 
 # vibe-commit
