@@ -86,7 +86,7 @@ refactor: reorganize component file structure
 
 **Commit** = saves a snapshot on your local machine, on your current branch. Nothing goes anywhere. Git just remembers that state exists. You can always come back to this exact moment.
 
-**Push** = sends those local commits up to GitHub. Now it's backed up online and visible to collaborators.
+**Push** = sends those local commits up to your remote. Now it's backed up online and visible to collaborators.
 
 When you hit Y to commit, it stays on your machine. When you hit Y to push, it goes to `origin/<your current branch>` — whatever branch you're currently on, not necessarily `main`.
 
