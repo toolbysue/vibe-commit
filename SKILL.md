@@ -5,23 +5,18 @@ description: Builds good Git commit habits by detecting when you're done with a 
 
 # vibe-commit
 
-You are a thoughtful coding collaborator. Throughout every session where files are being edited, watch for natural task boundaries and proactively offer to commit work at the right moment — without the user having to ask.
+Watch for natural task boundaries and proactively offer to commit — without the user having to ask.
 
-## When to Ask: Detection Rules
+## Detection Rules
 
-Watch for signals that a task is COMPLETE. Do NOT trigger on mid-task affirmations.
+Trigger when the current task is clearly COMPLETE:
+- Explicit completion: "done", "finished", "that's it", "that's perfect"
+- Topic shift to a different component/feature — only if prior task was finished. Mid-task redirects ("actually, let's do X first") are NOT boundaries.
+- Transition language: "next", "moving on", "let's do X" where X is a new task
 
-**Trigger a commit prompt when you detect:**
-- Explicit completion language: "done", "finished", "that's it", "that's perfect"
-- Topic shift: user describes a clearly different component or feature ("now let's do the navbar", "next is the mobile view", "let's move on to X")
-  > Only trigger on topic shift if the current task was clearly completed. A mid-task redirect like "actually, let's do X first" is NOT a task boundary.
-- Transition language: "next", "moving on", "let's move on", "let's do X" where X is different from the current task
+Never trigger on: "ok", "yes", "looks good", "nice", "great" — these are mid-task, not boundaries.
 
-**Never trigger on:**
-- "ok", "yes", "looks good", "nice", "great" — these happen constantly mid-task and are not task boundaries
-- Any affirmation that doesn't signal the end of a distinct task
-
-**Before prompting:** Run `git status` silently. If there are no uncommitted changes, skip the prompt entirely. If `git status` returns a fatal error (not a git repository), do not show the error. Offer once per session:
+**Before prompting:** Run `git status` silently. Skip if no uncommitted changes. If it returns a fatal error (not a git repo), suppress it and offer once per session:
 
 ```
 I noticed this folder isn't set up for version control yet. Want me to set that up? (Y/N)
@@ -29,7 +24,7 @@ I noticed this folder isn't set up for version control yet. Want me to set that 
 
 ## The Commit Prompt
 
-When you detect a task boundary AND there are uncommitted changes, ask:
+When a task boundary AND uncommitted changes are detected:
 
 ```
 Ready to commit? Here's what I'd write:
@@ -39,45 +34,32 @@ Ready to commit? Here's what I'd write:
 Y to save / N to skip
 ```
 
-Wait for Y or N. Do not commit until the user confirms.
+Wait for Y or N. Do not commit until confirmed.
 
 ## Commit Message Format
 
-Use a conventional commit type prefix followed by a plain English description of the actual change. Always write the description as if explaining to a non-developer.
+Conventional commit prefix + plain English description. Types: `style:` (visual/design), `feat:` (new feature), `fix:` (correction), `refactor:` (restructured, same output)
 
-Types:
-- `style:` — visual or design changes (colors, sizes, layout, spacing)
-- `feat:` — new element or feature added
-- `fix:` — something broken or wrong was corrected
-- `refactor:` — code restructured without changing visible output
+Examples: `style: update hero button size and color to coral` / `feat: add mobile navigation menu`
 
-Good examples:
-- `style: update hero button size and color to coral`
-- `feat: add mobile navigation menu`
-- `fix: correct heading font size on mobile screens`
-- `refactor: reorganize component file structure`
-
-Rules:
-- Plain English after the colon — no jargon, no ticket numbers, no abbreviations
-- Describe what changed, not what you did ("update button color" not "change the color property of button")
-- Keep it under 72 characters total
+No jargon, ticket numbers, or abbreviations. Describe what changed, not what you did. Under 72 characters.
 
 ## If User Says Y: Commit
 
-Before staging, run `git status --short` and show the user a plain-English summary:
+Run `git status --short` and show files before staging:
 
 ```
 This will save: [list of changed files]
 ```
 
-Only proceed after showing this list. Then run:
+Then commit:
 
 ```bash
 git add -A
 git commit -m "[the exact message you proposed]"
 ```
 
-Then immediately offer to push:
+Offer to push:
 
 ```
 ✅ Committed locally — saved on your current branch.
@@ -86,44 +68,21 @@ Want to back it up to your remote too? (Y/N)
 
 ## If User Says Y to Push
 
-First check if an upstream branch is set:
-
-```bash
-git push 2>&1
-```
-
-If the output contains "no upstream branch" or "set-upstream", run instead:
-
-```bash
-git push --set-upstream origin [current-branch-name]
-```
-
-Do not show raw git error messages to the user. Handle silently and confirm:
+Run `git push 2>&1`. If output includes "no upstream branch" or "set-upstream", use `git push --set-upstream origin [current-branch-name]`. Never show raw git errors. Confirm:
 
 ```
 ✅ Backed up to your remote.
 ```
 
-## If User Says N to the Initial Commit Prompt
+## If User Says N
 
-Respect it without comment. Continue the session normally.
-
-```
-No problem, I won't save a snapshot right now.
-```
-
-## If User Says N to the Push Offer
-
-Respect it without comment. Continue the session normally.
-
-```
-Got it, staying local for now.
-```
+Respect without comment. Continue normally.
+- Commit: `No problem, I won't save a snapshot right now.`
+- Push: `Got it, staying local for now.`
 
 ## Important Rules
 
-- Never run `git add` or `git commit` without the user saying Y first
-- Never run `git push` without the user saying Y to the push offer
+- Never run `git add`, `git commit`, or `git push` without explicit Y
 - Only ask at genuine task boundaries — not mid-task
-- If `git status` shows a clean working tree, skip the prompt entirely
-- One commit prompt per task boundary — don't ask twice for the same completed work
+- Skip if `git status` shows a clean working tree
+- One prompt per boundary — don't ask twice for the same work

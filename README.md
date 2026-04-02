@@ -102,6 +102,20 @@ Works with: Claude Code CLI and Claude Code IDE integration (VS Code, Cursor, et
 
 ---
 
+## Token Usage
+
+vibe-commit is designed to stay out of the way — and that includes token usage.
+
+When idle (no commit happening), only a short description of the skill is loaded: roughly **20 tokens per message**. The full skill instructions only load when Claude is actually running the commit flow.
+
+For a typical 20-message coding session, the extra cost is roughly:
+- **~$0.06** on Claude Sonnet
+- **~$0.28** on Claude Opus
+
+That's less than a fraction of a cent per session on Sonnet — lightweight by design.
+
+---
+
 ## What It Doesn't Do
 
 - No Git setup or repo initialization
