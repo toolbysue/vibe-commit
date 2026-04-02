@@ -81,7 +81,7 @@ Then immediately offer to push:
 
 ```
 ✅ Committed locally — saved on your current branch.
-Want to back it up to GitHub too? (Y/N)
+Want to back it up to your remote too? (Y/N)
 ```
 
 ## If User Says Y to Push
